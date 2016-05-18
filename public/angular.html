@@ -1,0 +1,96 @@
+<html ng-app="superstock">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src="js/smartTable.js"></script>
+<script src="js/superstock_bundle.js"></script>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css">
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.2.0/angularfire.min.js"></script>
+<style>
+ .st-sort-ascent:before{
+    content: '\25B2';
+  }
+
+  .st-sort-descent:before{
+    content: '\25BC';
+  }
+</style>
+</head>
+<body ng-controller="super-table">
+
+<div class='col-md-4 col-xs-8'>
+<div class='text-center'><h4>Siêu đầu tư</h4></div>
+<table st-table="longterm" st-safe-src="longterm" class="table table-striped">
+    <thead>
+    <tr>
+        <th st-sort="Symbol">Symbol</th>
+        <th st-sort="EPS">EPS</th>
+        <th st-sort="LNST">LNST</th>
+        <th st-sort="Score">Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="row in longterm">
+        <td>{{row.Symbol | uppercase}}</td>
+        <td>{{row.EPS}}</td>
+        <td>{{row.LNST}}</td>
+        <td>{{row.Score}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<div class='col-md-4 col-xs-8'>
+<div class='text-center'><h4>Siêu đầu cơ</h4></div>
+<table st-table="shorterm" st-safe-src="shorterm" class="table table-striped">
+    <thead>
+    <tr>
+        <th st-sort="Symbol">Symbol</th>
+        <th st-sort="EPS">EPS</th>
+        <th st-sort="LNST">LNST</th>
+        <th st-sort="Score">Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="row in shorterm">
+        <td>{{row.Symbol | uppercase}}</td>
+        <td>{{row.EPS}}</td>
+        <td>{{row.LNST}}</td>
+        <td>{{row.Score}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+
+<div class='col-md-4 col-xs-8'>
+<div class='text-center'><h4>Siêu cổ phiếu</h4></div>
+<table st-table="superstock" st-safe-src="superstock" class="table table-striped">
+    <thead>
+    <tr>
+        <th st-sort="Symbol">Symbol</th>
+        <th st-sort="EPS">EPS</th>
+        <th st-sort="LNST">LNST</th>
+        <th st-sort="Score">Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="row in superstock">
+        <td>{{row.Symbol | uppercase}}</td>
+        <td>{{row.EPS}}</td>
+        <td>{{row.LNST}}</td>
+        <td>{{row.Score}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+</body>
+</html>
