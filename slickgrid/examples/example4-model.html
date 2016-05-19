@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <title>SlickGrid example 4: Model</title>
+  <title>Superstock</title>
   <link rel="stylesheet" href="../slick.grid.css" type="text/css"/>
   <link rel="stylesheet" href="../controls/slick.pager.css" type="text/css"/>
   <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
@@ -108,22 +108,33 @@
 <script src="../controls/slick.columnpicker.js"></script>
 
 <script>
+
+
 var dataView;
 var grid;
 var data = [];
+
 var columns = [
-  {id: "sel", name: "#", field: "num", behavior: "select", cssClass: "cell-selection", width: 40, cannotTriggerInsert: true, resizable: false, selectable: false },
-  {id: "title", name: "Title", field: "title", width: 120, minWidth: 120, cssClass: "cell-title", editor: Slick.Editors.Text, validator: requiredFieldValidator, sortable: true},
-  {id: "duration", name: "Duration", field: "duration", editor: Slick.Editors.Text, sortable: true},
-  {id: "%", defaultSortAsc: false, name: "% Complete", field: "percentComplete", width: 80, resizable: false, formatter: Slick.Formatters.PercentCompleteBar, editor: Slick.Editors.PercentComplete, sortable: true},
-  {id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
-  {id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
-  {id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", formatter: Slick.Formatters.Checkmark, editor: Slick.Editors.Checkbox, cannotTriggerInsert: true, sortable: true}
-];
+  {id: "Symbol", name: "Symbol", field: "Symbol", behavior: "select", cssClass: "cell-selection", width: 80, cannotTriggerInsert: true, resizable: false, selectable: false, sortable: true },
+  {id: "EPS", name: "EPS", field: "EPS", behavior: "select", cssClass: "cell-selection", minWidth: 80, cannotTriggerInsert: true, resizable: false, selectable: false, sortable: true },
+  {id: "LNST", name: "LNST", field: "LNST", behavior: "select", cssClass: "cell-selection", minWidth: 80, cannotTriggerInsert: true, resizable: false, selectable: false, sortable: true },
+  {id: "ClosePrice", name: "ClosePrice", field: "ClosePrice", behavior: "select", cssClass: "cell-selection", minWidth: 80, cannotTriggerInsert: true, resizable: false, selectable: false, sortable: true },
+  {id: "Signal", name: "Signal", field: "Signal", behavior: "select", cssClass: "cell-selection", minWidth: 80, cannotTriggerInsert: true, resizable: false, selectable: false, sortable: true },
+]
+
+// var columns = [
+//   {id: "sel", name: "#", field: "num", behavior: "select", cssClass: "cell-selection", width: 40, cannotTriggerInsert: true, resizable: false, selectable: false },
+//   {id: "title", name: "Title", field: "title", width: 120, minWidth: 120, cssClass: "cell-title", editor: Slick.Editors.Text, validator: requiredFieldValidator, sortable: true},
+//   {id: "duration", name: "Duration", field: "duration", editor: Slick.Editors.Text, sortable: true},
+//   {id: "%", defaultSortAsc: false, name: "% Complete", field: "percentComplete", width: 80, resizable: false, formatter: Slick.Formatters.PercentCompleteBar, editor: Slick.Editors.PercentComplete, sortable: true},
+//   {id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
+//   {id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
+//   {id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", formatter: Slick.Formatters.Checkmark, editor: Slick.Editors.Checkbox, cannotTriggerInsert: true, sortable: true}
+// ];
 
 var options = {
   editable: true,
-  enableAddRow: true,
+  enableAddRow: false,
   enableCellNavigation: true,
   asyncEditorLoading: true,
   forceFitColumns: false,
@@ -145,11 +156,11 @@ function requiredFieldValidator(value) {
 }
 
 function myFilter(item, args) {
-  if (item["percentComplete"] < args.percentCompleteThreshold) {
+  if (item["EPS"] < args.percentCompleteThreshold) {
     return false;
   }
 
-  if (args.searchString != "" && item["title"].indexOf(args.searchString) == -1) {
+  if (args.searchString != "" && item["Symbol"].indexOf(args.searchString) == -1) {
     return false;
   }
 
@@ -179,49 +190,43 @@ $(".grid-header .ui-icon")
           $(e.target).removeClass("ui-state-hover")
         });
 
+var SYMBOLS = ['SSI', 'VND', 'FPT', 'HSC', 'VCB', 'AAA', 'GTN'];
+
 function regenerateData() {
   var data = []
-  for (var i = 0; i < 50000; i++) {
+  for (var i = 0; i < SYMBOLS.length; i++) {
     var d = (data[i] = {});
-
-    d["id"] = "id_" + i;
-    d["num"] = i;
-    d["title"] = "Task " + i;
-    d["duration"] = "5 days";
-    d["percentComplete"] = Math.round(Math.random() * 100);
-    d["start"] = "01/01/2009";
-    d["finish"] = "01/05/2009";
-    d["effortDriven"] = (i % 5 == 0);
+    d["id"] = SYMBOLS[i];
+    d["Symbol"] = SYMBOLS[i];
+    d["EPS"] = Math.round(Math.random() * 100);
+    d["LNST"] = Math.round(Math.random() * 100);
+    d["ClosePrice"] = Math.round(Math.random() * 100);
+    d["Signal"] = Math.round(Math.random() * 100);
   }
   return data;
 }
 
 function createItem() {
     var d = {};
-    d["id"] = "id_" + i;
-    d["num"] = i;
-    d["title"] = "Task " + Math.round(Math.random() * 100);
-    d["duration"] = "5 days";
-    d["percentComplete"] = Math.round(Math.random() * 100);
-    d["start"] = "01/01/2009";
-    d["finish"] = "01/05/2009";
-    d["effortDriven"] = (i % 5 == 0);
+    d["id"] = SYMBOLS[i];
+    d["Symbol"] = SYMBOLS[i];
+    d["EPS"] = Math.round(Math.random() * 100);
+    d["LNST"] = Math.round(Math.random() * 100);
+    d["ClosePrice"] = Math.round(Math.random() * 100);
+    d["Signal"] = Math.round(Math.random() * 100);
     return d;
 }
 
 $(function () {
   // prepare the data
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < SYMBOLS.length; i++) {
     var d = (data[i] = {});
-
-    d["id"] = "id_" + i;
-    d["num"] = i;
-    d["title"] = "Task " + Math.round(Math.random() * 100);
-    d["duration"] = "5 days";
-    d["percentComplete"] = Math.round(Math.random() * 100);
-    d["start"] = "01/01/2009";
-    d["finish"] = "01/05/2009";
-    d["effortDriven"] = (i % 5 == 0);
+    d["id"] = "_id" + SYMBOLS[i];
+    d["Symbol"] = SYMBOLS[i];
+    d["EPS"] = Math.round(Math.random() * 100);
+    d["LNST"] = Math.round(Math.random() * 100);
+    d["ClosePrice"] = Math.round(Math.random() * 100);
+    d["Signal"] = Math.round(Math.random() * 100);
   }
 
 
