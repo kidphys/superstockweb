@@ -16,6 +16,13 @@ function load_realtime_price(callback) {
     });
 }
 
+function number_formatter(row, cell, value, columnDef, dataContext) {
+    if(!isNaN(Number(value))) {
+        return Number(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    }
+    return value;
+}
+
 function build_columns(fields) {
     return fields.map(function(f) {
         return {
@@ -30,6 +37,7 @@ function build_columns(fields) {
             selectable: false,
             sortable: true,
             defaultSortAsc: false,
+            formatter: number_formatter,
         };
     });
 }
