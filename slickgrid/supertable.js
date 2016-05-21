@@ -37,13 +37,12 @@ function build_slick_grid(columns) {
   }
 
   function myFilter(item, args) {
-    if (item["EPS"] < args.percentCompleteThreshold) {
+    if(item['accumulatedVol'] < args.accumulatedVol) {
       return false;
     }
-
-    if (args.searchString != "" && item["Symbol"].indexOf(args.searchString) == -1) {
-      return false;
-    }
+    // if (args.searchString != "" && item["Symbol"].indexOf(args.searchString) == -1) {
+    //   return false;
+    // }
 
     return true;
   }
@@ -239,8 +238,13 @@ function build_slick_grid(columns) {
       dataView.setItems(data);
       grid.render();
     },
+
     get_grid: function() {
       return grid;
+    },
+
+    get_dataview: function() {
+      return dataView;
     }
   }
 }
