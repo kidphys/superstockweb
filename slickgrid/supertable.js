@@ -114,6 +114,7 @@ function build_slick_grid(columns) {
     });
 
     grid.onSort.subscribe(function (e, args) {
+      console.log('Sort', e, args);
       sortdir = args.sortAsc ? 1 : -1;
       sortcol = args.sortCol.field;
 

@@ -3,9 +3,11 @@ function load_realtime_price(callback) {
     console.log('Loading firebase instance');
     var ref = new Firebase("https://superstock.firebaseio.com");
     ref.child('Fields').on('value', function(field_snapshot) {
+        console.log('fields', field_snapshot.val()['Symbol']);
         var fields = field_snapshot.val()['Symbol'].split('|');
         ref.child('Realtime').on('value', function(data_snapshot){
             var data = data_snapshot.val();
+            console.log('data', data);
             var data_arr = Object.keys(data).map(function(key) {
                 return data[key].split('|');
             });
@@ -27,6 +29,7 @@ function build_columns(fields) {
             resizable: true,
             selectable: false,
             sortable: true,
+            defaultSortAsc: false,
         };
     });
 }
