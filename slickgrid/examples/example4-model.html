@@ -114,6 +114,13 @@
   var items = build_json_array(fields, data_arr);
   var slick = build_slick_grid(build_columns(fields));
       slick.update(items);
+  setInterval(function() {
+    for(var i = 0; i < items.length; i++) {
+      items[i].accumulatedVol = Math.round(Math.random() * 5000000);
+    }
+    console.log('updating', items[0], items[0].accumulatedVol);
+    slick.update(items);
+  }, 2000);
   var grid = slick.get_grid();
   var dataView = slick.get_dataview();
 
@@ -139,24 +146,19 @@
       slide: function(event, ui) {
         console.log('Updating filter ', target, ui.value);
         Slick.GlobalEditorLock.cancelCurrentEdit();
-        if(filterValue[target].value != ui.value) {
-          window.clearTimeout(h_runfilters);
-          h_runfilters = window.setTimeout(updateFilter, 10);
-          filterValue[target].value = ui.value;
-        }
+        filterValue[target].value = ui.value;
+        slick.updateFilter({
+          closePrice: filterValue['Price'].value,
+          accumulatedVol: filterValue['Volume'].value,
+        });
+        // if(filterValue[target].value != ui.value) {
+        //   window.clearTimeout(h_runfilters);
+        //   h_runfilters = window.setTimeout(updateFilter, 10);
+        //   filterValue[target].value = ui.value;
+        // }
       },
     });
   });
-
-
-  function updateFilter() {
-    dataView.setFilterArgs({
-      closePrice: filterValue['Price'].value,
-      accumulatedVol: filterValue['Volume'].value,
-    });
-    console.log('Filter updated', filterValue);
-    dataView.refresh();
-  }
 
     // wire up the slider to apply the filter to the model
     $("#pcSlider,#pcSlider2").slider({

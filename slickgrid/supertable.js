@@ -232,11 +232,13 @@ function build_slick_grid(columns) {
     $("#gridContainer").resizable();
 
 
+  var lastFilterUpdateHandler = null;
 
   return {
     update: function(data) {
       dataView.setItems(data);
-      grid.render();
+      dataView.refresh();
+      grid.invalidate();
     },
 
     get_grid: function() {
@@ -245,6 +247,17 @@ function build_slick_grid(columns) {
 
     get_dataview: function() {
       return dataView;
+    },
+
+    /**
+    Update filter with a slight of delay
+    */
+    updateFilter: function(filterArgs) {
+      window.clearTimeout(lastFilterUpdateHandler);
+      lastFilterUpdateHandler = window.setTimeout(function() {
+        dataView.setFilterArgs(filterArgs);
+        dataView.refresh();
+      }, 10);
     }
   }
 }
