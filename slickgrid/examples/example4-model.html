@@ -13,7 +13,19 @@
   <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
   <link rel="stylesheet" href="examples.css" type="text/css"/>
   <link rel="stylesheet" href="../controls/slick.columnpicker.css" type="text/css"/>
+
   <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+
+  <script src="../lib/jquery-1.7.min.js"></script>
+  <script src="../lib/firebugx.js"></script>
+
+  <script src="../lib/jquery-ui-1.8.16.custom.min.js"></script>
+  <script src="../lib/jquery.event.drag-2.2.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+  <!-- jQuery mobile -->
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" type="text/css"/>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
   <script src="../superstock.js"></script>
   <script src="../supertable.js"></script>
   <script src="../data.js"></script>
@@ -59,14 +71,41 @@
 </head>
 <body>
 <div class="container-fluid">
+  <!--
+  Very hacky way, here we embed the jQuery mobile into a bootstrap theme, may be remove the bootstrap is better?
+  -->
+  <div class="row" style="height:50px">
+    <div data-role="page">
+        <div data-role="panel" id="filter_panel" data-position="left" data-display="overlay">
+            <label for="slider-matchedPrice">Giá khớp</label>
+            <input type="range" name="slider-matchedPrice" id="slider-matchedPrice" value="60" min="0" max="200" data-highlight="true">
+            <label for="slider-AvgVolT30">KLTB 30 ngày</label>
+            <input type="range" name="slider-AvgVolT30" id="slider-AvgVolT30" value="50000" min="0" max="100000" step="50" data-highlight="true">
+            <label for="slider-EPS">EPS</label>
+            <input type="range" name="slider-EPS" id="slider-EPS" value="60" min="0" max="1000" step="50" data-highlight="true">
+            <label for="slider-accumulatedVol">KLGD</label>
+            <input type="range" name="slider-accumulatedVol" id="slider-accumulatedVol" value="60" min="0" max="1000" step="50" data-highlight="true">
+
+        </div>
+        <div data-role="header">
+          <div data-role="navbar">
+            <ul>
+              <li><a href="#anylink">Home</a></li>
+              <li><a href="#anylink">Page Two</a></li>
+              <li><a href="#filter_panel">Lọc</a></li>
+            </ul>
+          </div>
+        </div>
+    </div>
+  </div>
+
   <div class="row">
+    <!-- Slick Grid -->
     <div class="col-md-12 col-xs-12">
       <div style="position:relative">
         <div>
           <div class="grid-header" style="width:100%">
             <label>Siêu cổ phiếu</label>
-            <span style="float:right" class="ui-icon ui-icon-search" title="Toggle search panel"
-                  onclick="toggleFilterRow()"></span>
           </div>
           <div id="myGrid" style="width:100%;height:500px;"></div>
           <div id="pager" style="width:100%;height:20px;"></div>
@@ -74,27 +113,17 @@
       </div>
     </div>
   </div>
+  <!-- End Slick Grid -->
+
 </div>
+
 
 <div id="inlineFilterPanel" style="display:none;background:#dddddd;padding:3px;color:black;">
-  Show tasks with title including <input type="text" id="txtSearch2">
-  and % at least &nbsp;
-  <div style="width:100px;display:inline-block;" id="pcSlider2"></div>
-
-      <div class="row" id="slider_panel">
-        <!-- <span target="EPS"></span> -->
-        <span target="Volume"></span>
-<!--         <span target="GTGD"></span>
-        <span target="Price"></span>
- -->      </div>
+  Lọc mã chỉ có giá >= <input type="text" id="txtPrice">
+  KLGD >= <input type="text" id="txtGTGD">
+  <div class="row" id="slider_panel"></div>
 </div>
 
-<script src="../lib/firebugx.js"></script>
-
-<script src="../lib/jquery-1.7.min.js"></script>
-<script src="../lib/jquery-ui-1.8.16.custom.min.js"></script>
-<script src="../lib/jquery.event.drag-2.2.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
 <script src="../slick.core.js"></script>
 <script src="../slick.formatters.js"></script>
 <script src="../slick.editors.js"></script>
@@ -107,77 +136,73 @@
 
 <script>
 
-  var fields = field_str.split('|');
-  var data_arr = Object.keys(data).map(function(key) {
-      return data[key].split('|');
-  });
-  var items = build_json_array(fields, data_arr);
-  var slick = build_slick_grid(build_columns(fields));
-      slick.update(items);
-  setInterval(function() {
-    for(var i = 0; i < items.length; i++) {
-      items[i].accumulatedVol = Math.round(Math.random() * 5000000);
-    }
-    console.log('updating', items[0], items[0].accumulatedVol);
-    slick.update(items);
-  }, 2000);
-  var grid = slick.get_grid();
-  var dataView = slick.get_dataview();
-
-  /**
-  Building the slider
-  */
-  var h_runfilters = null;
-  var filterValue = {
-    EPS: {value: 2, max: 100},
-    GTGD: {value: 10, max: 100000000},
-    Price: {value: 10, max: 200},
-    Volume: {value: 100, max: 5000000},
-  };
-  $('#slider_panel>span').each(function() {
-    var $this = $(this);
-    var target = $this.attr('target');
-    $this.empty().slider({
-      value: filterValue[target].value,
-      range: 'min',
-      max: filterValue[target].max,
-      anitmate: true,
-      orientation: 'vertical',
-      slide: function(event, ui) {
-        console.log('Updating filter ', target, ui.value);
-        Slick.GlobalEditorLock.cancelCurrentEdit();
-        filterValue[target].value = ui.value;
-        slick.updateFilter({
-          closePrice: filterValue['Price'].value,
-          accumulatedVol: filterValue['Volume'].value,
+  $(document).ready(function() {
+        var fields = field_str.split('|');
+        var data_arr = Object.keys(data).map(function(key) {
+            return data[key].split('|');
         });
-        // if(filterValue[target].value != ui.value) {
-        //   window.clearTimeout(h_runfilters);
-        //   h_runfilters = window.setTimeout(updateFilter, 10);
-        //   filterValue[target].value = ui.value;
-        // }
-      },
-    });
-  });
+        var items = build_json_array(fields, data_arr);
+        var slick = build_slick_grid(build_columns(fields));
+            slick.update(items);
 
-    // wire up the slider to apply the filter to the model
-    $("#pcSlider,#pcSlider2").slider({
-      "range": "min",
-      "slide": function (event, ui) {
-        Slick.GlobalEditorLock.cancelCurrentEdit();
-
-        if (percentCompleteThreshold != ui.value) {
-          window.clearTimeout(h_runfilters);
-          h_runfilters = window.setTimeout(updateFilter, 10);
-          percentCompleteThreshold = ui.value;
+        function update_regularly() {
+          setInterval(function() {
+            for(var i = 0; i < items.length; i++) {
+              items[i].accumulatedVol = Math.round(Math.random() * 5000000);
+            }
+            console.log('updating', items[0], items[0].accumulatedVol);
+            slick.update(items);
+          }, 2000);
         }
-      }
-    });
 
-  function toggleFilterRow() {
-    var grid = slick.get_grid();
-    grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
-  }
+        var grid = slick.get_grid();
+        var dataView = slick.get_dataview();
+
+        /**
+        Building the slider
+        */
+        var slider_settings = [
+          {id: '#slider-matchedPrice', value: 10, key: 'matchedPrice'},
+          {id: '#slider-AvgVolT30', value: 10000, key: 'AvgVolT30'},
+          {id: '#slider-accumulatedVol', value: 10000, key: 'accumulatedVol'},
+          {id: '#slider-EPS', value: 10, key: 'EPS'},
+        ];
+        build_mobile_filter_panel(slider_settings, function(target, value) {
+          // TODO: convert to args here?
+          var args = {};
+          for(var i = 0; i < slider_settings.length; i++) {
+            var item = slider_settings[i];
+            args[item.key] = Number(item.value) * 1000;
+          }
+          console.log('Filter updated', args);
+          slick.updateFilter(args);
+        });
+
+        // build_control_panel('#slider_panel', filterValue, function(target, value) {
+        //   console.log('Slider updated', target, value);
+        //   $('#txt' + target).val(value);
+        // });
+
+          // wire up the slider to apply the filter to the model
+          $("#pcSlider,#pcSlider2").slider({
+            "range": "min",
+            "slide": function (event, ui) {
+              Slick.GlobalEditorLock.cancelCurrentEdit();
+
+              if (percentCompleteThreshold != ui.value) {
+                window.clearTimeout(h_runfilters);
+                h_runfilters = window.setTimeout(updateFilter, 10);
+                percentCompleteThreshold = ui.value;
+              }
+            }
+          });
+
+        function toggleFilterRow() {
+          var grid = slick.get_grid();
+          grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
+        }
+
+  });
 </script>
 </body>
 </html>

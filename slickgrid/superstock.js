@@ -1,13 +1,65 @@
+/**
+All my functions is in underscore,
+while the rest is in CamelCase
+*/
+
+/**
+Attach the event handler for slider
+
+NOTE:
+- To change min/max dynamically: $('#slider').attr('max', 100).slider('refresh');
+*/
+function build_mobile_filter_panel(settings, callback) {
+    for(var i = 0; i < settings.length; i++) {
+        (function(slider) {
+            console.log('Binding slider', slider.id);
+            var $slider = $(slider.id).bind('change', function() {
+                slider.value = $slider.val();
+                callback(slider.key, slider);
+            });
+        })(settings[i]);
+    }
+}
+
+/**
+Build a slider control panel, *require* jquery slider
+
+settings is:
+{
+    filter1: {max: Number, current: Number},
+    filter2: {max: Number, current: Number},
+    filter3: {max: Number, current: Number},
+}
+
+Use as: build_control_panel('#panel', {}, callback);
+*/
+function build_control_panel(id, setting, callback) {
+    var $target = $(id);
+    for(var key in filterValue) {
+        (function(key) {
+            var $span = $('<span></span>');
+            $target.append($span);
+            $span.slider({
+                   value: setting[key].value || 0,
+                   max: setting[key].max || 1000000,
+                   animate: true,
+                   orientation: 'vertical',
+                   slide: function(event, ui) {
+                       setting[key].value = ui.value;
+                       callback(key, ui.value);
+                   }
+            });
+        })(key);
+    }
+}
 
 function load_realtime_price(callback) {
     console.log('Loading firebase instance');
     var ref = new Firebase("https://superstock.firebaseio.com");
     ref.child('Fields').on('value', function(field_snapshot) {
-        console.log('fields', field_snapshot.val()['Symbol']);
         var fields = field_snapshot.val()['Symbol'].split('|');
         ref.child('Realtime').on('value', function(data_snapshot){
             var data = data_snapshot.val();
-            console.log('data', data);
             var data_arr = Object.keys(data).map(function(key) {
                 return data[key].split('|');
             });
