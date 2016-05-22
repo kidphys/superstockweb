@@ -37,6 +37,9 @@ function build_slick_grid(columns) {
   }
 
   function myFilter(item, args) {
+    if(item['matchPrice'] < args.matchPrice) {
+      return false;
+    }
     if(item['accumulatedVol'] < args.accumulatedVol) {
       return false;
     }
