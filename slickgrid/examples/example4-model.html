@@ -140,30 +140,34 @@
   /**
   Data preparation
   */
-  var fields = field_str.split('|');
-  var data_arr = Object.keys(data).map(function(key) {
-      return data[key].split('|');
+  load_realtime_price(function(fields, data_arr) {
+    console.log('data loaded', fields, data_arr);
+    var items = build_json_array(fields, data_arr);
+
+    /**
+    Hand pick only a few fields
+    */
+    var target_fields = ['Symbol', 'matchPrice', 'accumulatedVol', 'accumulatedVal', 'companyName'];
+
+    /**
+    Build the grid
+    */
+    slick = build_slick_grid(build_columns(target_fields));
+    slick.update(items);
+
+    var slider_settings = create_settings();
+
+    build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
+      var args = settings_to_args(slider_settings);
+      console.log('updateFilter', args);
+      slick.updateFilter(args);
+    });
   });
-  var items = build_json_array(fields, data_arr);
+  // var fields = field_str.split('|');
+  // var data_arr = Object.keys(data).map(function(key) {
+  //     return data[key].split('|');
+  // });
 
-  /**
-  Hand pick only a few fields
-  */
-  var target_fields = ['Symbol', 'matchPrice', 'accumulatedVol', 'accumulatedVal', 'companyName'];
-
-  /**
-  Build the grid
-  */
-  slick = build_slick_grid(build_columns(target_fields));
-  slick.update(items);
-
-  var slider_settings = create_settings();
-
-  build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
-    var args = settings_to_args(slider_settings);
-    console.log('updateFilter', args);
-    slick.updateFilter(args);
-  });
 
   $(document).ready(function() {
       function update_regularly() {
@@ -175,7 +179,7 @@
           slick.update(items);
         }, 2000);
       }
-      update_regularly();
+      // update_regularly();
   });
 </script>
 </body>

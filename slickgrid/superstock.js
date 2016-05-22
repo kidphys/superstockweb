@@ -124,8 +124,11 @@ function load_realtime_price(callback) {
     var ref = new Firebase("https://superstock.firebaseio.com");
     ref.child('Fields').on('value', function(field_snapshot) {
         var fields = field_snapshot.val()['Symbol'].split('|');
-        ref.child('Realtime').on('value', function(data_snapshot){
+        ref.child('Đầy Đủ').on('value', function(data_snapshot){
             var data = data_snapshot.val();
+            if(!data) {
+                throw 'There is no data to process';
+            }
             var data_arr = Object.keys(data).map(function(key) {
                 return data[key].split('|');
             });
@@ -176,11 +179,4 @@ function build_json_array(fields, data) {
         res.push(obj);
     }
     return res;
-}
-
-/**
-Filter the list with only chosen fields
-*/
-function filter_fields(data, fields) {
-
 }
