@@ -137,18 +137,23 @@
 <script>
 
 
+  /**
+  Data preparation
+  */
   var fields = field_str.split('|');
   var data_arr = Object.keys(data).map(function(key) {
       return data[key].split('|');
   });
+  var items = build_json_array(fields, data_arr);
 
   /**
   Hand pick only a few fields
   */
-
-  var items = build_json_array(fields, data_arr);
-
   var target_fields = ['Symbol', 'matchPrice', 'accumulatedVol', 'accumulatedVal', 'companyName'];
+
+  /**
+  Build the grid
+  */
   slick = build_slick_grid(build_columns(target_fields));
   slick.update(items);
 
