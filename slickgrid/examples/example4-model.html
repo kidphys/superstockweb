@@ -140,9 +140,15 @@
   /**
   Data preparation
   */
-  load_realtime_price(function(fields, data_arr) {
-    console.log('data loaded', fields, data_arr);
-    var items = build_json_array(fields, data_arr);
+  fetch_fields(function(fields) {
+    // $.mobile.loading('show');  // NOTE: this can be handy later
+    var fields = field_str.split('|');
+    var data_arr = Object.keys(data).map(function(key) {
+        return data[key].split('|');
+    });
+    console.log('data loaded', fields);
+
+    // var items = build_json_array(fields, data_arr);
 
     /**
     Hand pick only a few fields
@@ -153,7 +159,7 @@
     Build the grid
     */
     slick = build_slick_grid(build_columns(target_fields));
-    slick.update(items);
+    // slick.update(items);
 
     var slider_settings = create_settings();
 
@@ -162,11 +168,9 @@
       console.log('updateFilter', args);
       slick.updateFilter(args);
     });
+
+    $.mobile.changePage('#menu');
   });
-  // var fields = field_str.split('|');
-  // var data_arr = Object.keys(data).map(function(key) {
-  //     return data[key].split('|');
-  // });
 
 
   $(document).ready(function() {

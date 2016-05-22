@@ -9,7 +9,7 @@ Turing a settings list to obj,
 comfort to slickgrid
 */
 function settings_to_args(settings) {
-    return slider_settings.reduce(function(obj, slider) {
+    return settings.reduce(function(obj, slider) {
       obj[slider.target] = obj[slider.target] || 0;
       obj[slider.target] = slider.value * slider.multiply;
       return obj;
@@ -44,11 +44,11 @@ function build_mobile_filter_panel(id, settings, callback) {
     }
 
     var built = false; // work around jQuery mobile call pagebeforechange twice
+    var $target = $(id);
 
     $(document).bind('pagebeforechange', function(e, data){
-        console.log('Page Before Changed', e, data);
         if(!built) {
-            var $target = $(id);
+            console.log('Page Before Changed, appending slider', e, data);
             for(var i = 0; i < settings.length; i++) {
                 var slider_setting = settings[i];
                 var $slider = _slider_template(slider_setting);
@@ -59,17 +59,39 @@ function build_mobile_filter_panel(id, settings, callback) {
     });
 
     $(document).bind('pagechange', function(e, data) {
-        console.log('Page change');
+        /**
+        After enhancement, somehow all event handlers dropped.
+        Hence putting enhanceWithin() before binding event handlers help retained them
+        */
+        $target.enhanceWithin();
+        console.log('Page changed, binding event to slider', data.toPage.attr('id'));
         for(var i = 0; i < settings.length; i++) {
             (function(slider) {
                 var $slider = $('#' + slider.id);
                 console.log('Binding slider', $slider);
-                $slider.bind('change', function() {
+                $slider.on('change', function() {
+                    console.log('slider changed', $slider);
                     slider.value = $slider.val();
                     callback(slider);
                 });
             })(settings[i]);
         }
+    });
+
+    $(document).bind('pageshow', function(e, data) {
+        console.log('pageshow');
+    });
+
+    $(document).bind('pagebeforecreate', function(e, data) {
+        console.log('pagebeforecreate');
+    });
+
+    $(document).bind('pagecreate', function(e, data) {
+        console.log('pagecreate');
+    });
+
+    $(document).bind('pagecontainershow', function(e, data) {
+        console.log('pagecontainershow');
     });
 }
 
@@ -117,6 +139,16 @@ function build_control_panel(id, setting, callback) {
             });
         })(key);
     }
+}
+
+/**
+This is handy for building UI & testing
+*/
+function fetch_fields(callback) {
+    var ref = new Firebase("https://superstock.firebaseio.com");
+    ref.child('Fields').on('value', function(snapshot) {
+        callback(snapshot.val());
+    });
 }
 
 function load_realtime_price(callback) {
