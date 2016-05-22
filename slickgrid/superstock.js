@@ -4,15 +4,33 @@ while the rest is in CamelCase
 */
 
 /**
-Attach the event handler for slider
-
-NOTE:
-- To change min/max dynamically: $('#slider').attr('max', 100).slider('refresh');
+Build a slider control panel, *require* jquery mobile slider
+*Require* jQuery mobile
+Better theme & mobile friendly
 */
-function build_mobile_filter_panel(settings, callback) {
+function _slider_template(slider_settings) {
+    var template =
+            '<label for="' + slider_settings.id + '">' + slider_settings.label + '</label> \
+            <input type="range" name="slider-fill" id="' + slider_settings.id + '" value="' + slider_settings.value +
+            '" min="0" max="' + slider_settings.max + '" step="50" data-highlight="true">';
+    return $(template);
+}
+
+function build_mobile_filter_panel(id, settings) {
+    var $target = $(id);
+    for(var i = 0; i < settings.length; i++) {
+        var slider_setting = settings[i];
+        var $slider = _slider_template(slider_setting);
+        $target.append($slider);
+    }
+}
+
+/**
+Old method
+*/
+function attach_mobile_filter_panel(settings, callback) {
     for(var i = 0; i < settings.length; i++) {
         (function(slider) {
-            console.log('Binding slider', slider.id);
             var $slider = $(slider.id).bind('change', function() {
                 slider.value = $slider.val();
                 callback(slider.key, slider);

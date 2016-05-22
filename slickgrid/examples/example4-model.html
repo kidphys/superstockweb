@@ -75,9 +75,9 @@
   Very hacky way, here we embed the jQuery mobile into a bootstrap theme, may be remove the bootstrap is better?
   -->
   <div class="row" style="height:50px">
-    <div data-role="page">
+    <div data-role="page" id='filter_panel_page' data-url='yay'>
         <div data-role="panel" id="filter_panel" data-position="left" data-display="overlay">
-            <label for="slider-matchedPrice">Giá khớp</label>
+<!--             <label for="slider-matchedPrice">Giá khớp</label>
             <input type="range" name="slider-matchedPrice" id="slider-matchedPrice" value="60" min="0" max="200" data-highlight="true">
             <label for="slider-AvgVolT30">KLTB 30 ngày</label>
             <input type="range" name="slider-AvgVolT30" id="slider-AvgVolT30" value="50000" min="0" max="100000" step="50" data-highlight="true">
@@ -86,7 +86,7 @@
             <label for="slider-accumulatedVol">KLGD</label>
             <input type="range" name="slider-accumulatedVol" id="slider-accumulatedVol" value="60" min="0" max="1000" step="50" data-highlight="true">
 
-        </div>
+ -->        </div>
         <div data-role="header">
           <div data-role="navbar">
             <ul>
@@ -135,6 +135,35 @@
 <script src="../controls/slick.columnpicker.js"></script>
 
 <script>
+  var slider_settings = [
+    {id: 'slider-matchedPrice', value: 10, max: 200, label: 'Price: '},
+    {id: 'slider-EPS', value: 10, max: 200, label: 'EPS: '},
+  ];
+
+  var built = false;
+
+  $(document).bind('pagebeforechange', function(e, data){
+    console.log('Page before changed', data);
+    if(!built) {
+      build_mobile_filter_panel('#filter_panel', slider_settings);
+      built = true;
+    }
+  });
+
+  $(document).bind('pagechange', function(e, data) {
+    console.log('Page change');
+    for(var i = 0; i < slider_settings.length; i++) {
+        (function(slider) {
+            var $slider = $('#' + slider.id);
+            console.log('Binding slider', $slider);
+            $slider.bind('change', function() {
+                slider.value = $slider.val();
+                console.log('Slider changed ', slider.value);
+                // callback(slider.key, slider);
+            });
+        })(slider_settings[i]);
+    }
+  });
 
   $(document).ready(function() {
         var fields = field_str.split('|');
@@ -161,22 +190,25 @@
         /**
         Building the slider
         */
-        var slider_settings = [
-          {id: '#slider-matchedPrice', value: 10, key: 'matchedPrice'},
-          {id: '#slider-AvgVolT30', value: 10000, key: 'AvgVolT30'},
-          {id: '#slider-accumulatedVol', value: 10000, key: 'accumulatedVol'},
-          {id: '#slider-EPS', value: 10, key: 'EPS'},
-        ];
-        build_mobile_filter_panel(slider_settings, function(target, value) {
-          // TODO: convert to args here?
-          var args = {};
-          for(var i = 0; i < slider_settings.length; i++) {
-            var item = slider_settings[i];
-            args[item.key] = Number(item.value) * 1000;
-          }
-          console.log('Filter updated', args);
-          slick.updateFilter(args);
-        });
+
+
+
+        // var slider_settings = [
+        //   {id: '#slider-matchedPrice', value: 10, key: 'matchedPrice'},
+        //   {id: '#slider-AvgVolT30', value: 10000, key: 'AvgVolT30'},
+        //   {id: '#slider-accumulatedVol', value: 10000, key: 'accumulatedVol'},
+        //   {id: '#slider-EPS', value: 10, key: 'EPS'},
+        // ];
+        // build_mobile_filter_panel(slider_settings, function(target, value) {
+        //   // TODO: convert to args here?
+        //   var args = {};
+        //   for(var i = 0; i < slider_settings.length; i++) {
+        //     var item = slider_settings[i];
+        //     args[item.key] = Number(item.value) * 1000;
+        //   }
+        //   console.log('Filter updated', args);
+        //   slick.updateFilter(args);
+        // });
 
         // build_control_panel('#slider_panel', filterValue, function(target, value) {
         //   console.log('Slider updated', target, value);
