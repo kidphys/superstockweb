@@ -78,21 +78,6 @@ function build_mobile_filter_panel(id, settings, callback) {
         }
     });
 
-    $(document).bind('pageshow', function(e, data) {
-        console.log('pageshow');
-    });
-
-    $(document).bind('pagebeforecreate', function(e, data) {
-        console.log('pagebeforecreate');
-    });
-
-    $(document).bind('pagecreate', function(e, data) {
-        console.log('pagecreate');
-    });
-
-    $(document).bind('pagecontainershow', function(e, data) {
-        console.log('pagecontainershow');
-    });
 }
 
 /**
