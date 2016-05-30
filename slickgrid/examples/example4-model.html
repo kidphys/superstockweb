@@ -50,7 +50,7 @@
       border-right-style: solid;
       background: white;
       color: black;
-      text-align: right;
+      text-align: left;
       font-size: 10px;
     }
 
@@ -148,38 +148,32 @@
     return ref;
   }
 
-  var ref = new Firebase("https://superstock.firebaseio.com");
-  ref.onAuth(function(authData) {
-    if(!authData) {
-      console.log('Not logged in yet', authData);
-      login_facebook(ref);
-    }
-    else{
-      console.log('Authenticated, proceed..', authData);
-    }
-  });
-
   function fetch_data_dynamically() {
-    fetch_fields(function(fields) {
-      // $.mobile.loading('show');  // NOTE: this can be handy later
-      var fields = field_str.split('|');
-      var data_arr = Object.keys(data).map(function(key) {
-          return data[key].split('|');
-      });
-      console.log('data loaded', fields);
-
-      // var items = build_json_array(fields, data_arr);
+    console.log('Start loading');
+    $.mobile.loading('show');
+    fetch_realtime_price(function(fields, data_arr, titles) {
+      $.mobile.loading('hide');
+      console.log('Loading done');
+      var items = build_json_array(fields, data_arr);
 
       /**
       Hand pick only a few fields
       */
-      var target_fields = ['Symbol', 'matchPrice', 'accumulatedVol', 'accumulatedVal', 'companyName'];
+      var target_fields = [];
+      for(var i = 0; i < fields.length; i++) {
+        target_fields.push({
+          id: fields[i],
+          name: titles[i],
+          field: fields[i]
+        });
+      }
 
       /**
       Build the grid
       */
-      slick = build_slick_grid(build_columns(target_fields));
-      // slick.update(items);
+      console.log('Building slick grid with fields', target_fields);
+      slick = build_slick_grid(build_columns_with_titles(target_fields));
+      slick.update(items);
 
       var slider_settings = create_settings();
 
@@ -192,6 +186,18 @@
       $.mobile.changePage('#menu');
     });
   }
+
+  var ref = new Firebase("https://superstock.firebaseio.com");
+  ref.onAuth(function(authData) {
+    if(!authData) {
+      console.log('Not logged in yet', authData);
+      login_facebook(ref);
+    }
+    else{
+      console.log('Authenticated, proceed..', authData);
+      fetch_data_dynamically();
+    }
+  });
 
 
   $(document).ready(function() {

@@ -144,28 +144,34 @@ function build_control_panel(id, setting, callback) {
 /**
 This is handy for building UI & testing
 */
-function fetch_fields(callback) {
+function fetch_fields(field, callback) {
     var ref = new Firebase("https://superstock.firebaseio.com");
-    ref.child('Fields').on('value', function(snapshot) {
-        callback(snapshot.val());
+    ref.child(field).on('value', function(snapshot) {
+        callback(snapshot.val().split('|'));
     });
 }
 
-function load_realtime_price(callback) {
+function fetch_realtime_price(callback) {
     console.log('Loading firebase instance');
     var ref = new Firebase("https://superstock.firebaseio.com");
-    ref.child('Fields').on('value', function(field_snapshot) {
-        var fields = field_snapshot.val()['Symbol'].split('|');
-        ref.child('Đầy Đủ').on('value', function(data_snapshot){
-            var data = data_snapshot.val();
-            if(!data) {
-                throw 'There is no data to process';
-            }
-            var data_arr = Object.keys(data).map(function(key) {
-                return data[key].split('|');
+    ref.child('superstock_fields').on('value', function(field_snapshot) {
+        var fields = field_snapshot.val()['symbol'].split('|');
+        console.log('Loading fields done', fields);
+        ref.child('superstock_titles').on('value', function(titles) {
+            titles = titles.val()['Mã'].split('|');
+            console.log('Loading titles done', titles);
+            ref.child('superstock').on('value', function(data_snapshot){
+                var data = data_snapshot.val();
+                if(!data) {
+                    throw 'There is no data to process';
+                }
+                var data_arr = Object.keys(data).map(function(key) {
+                    return data[key].split('|');
+                });
+                console.log('Loading price data done', data_arr);
+                callback(fields, data_arr, titles);
             });
-            callback(fields, data_arr);
-        });
+        })
     });
 }
 
@@ -174,6 +180,28 @@ function number_formatter(row, cell, value, columnDef, dataContext) {
         return Number(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
     }
     return value;
+}
+
+/**
+Similar to build_columns but with both fields and nicely display titles
+*/
+function build_columns_with_titles(fields) {
+    return fields.map(function(f) {
+        return {
+            id: f.id,
+            name: f.name,
+            field: f.field,
+            behavior: "select",
+            cssClass: "cell-selection",
+            width: 80,
+            cannotTriggerInsert: true,
+            resizable: true,
+            selectable: false,
+            sortable: true,
+            defaultSortAsc: false,
+            formatter: number_formatter,
+        };
+    });
 }
 
 function build_columns(fields) {
