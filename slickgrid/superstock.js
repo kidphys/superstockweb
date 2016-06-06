@@ -162,7 +162,13 @@ function fetch_realtime_price(callback) {
 
 function number_formatter(row, cell, value, columnDef, dataContext) {
     if(!isNaN(Number(value))) {
-        return Number(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+        var num = Number(value);
+        if(num > 1) {
+            return Number(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+        }
+        else{
+            return Number(value).toFixed(2).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+        }
     }
     return value;
 }

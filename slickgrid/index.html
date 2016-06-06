@@ -188,16 +188,19 @@
   }
 
   var ref = new Firebase("https://superstock.firebaseio.com");
-  ref.onAuth(function(authData) {
-    if(!authData) {
-      console.log('Not logged in yet', authData);
-      login_facebook(ref);
-    }
-    else{
-      console.log('Authenticated, proceed..', authData);
-      fetch_data_dynamically();
-    }
-  });
+  fetch_data_dynamically();
+
+  // TODO: not handle browser pop up properly, just load data directly for now
+  // ref.onAuth(function(authData) {
+  //   if(!authData) {
+  //     console.log('Not logged in yet', authData);
+  //     login_facebook(ref);
+  //   }
+  //   else{
+  //     console.log('Authenticated, proceed..', authData);
+  //     fetch_data_dynamically();
+  //   }
+  // });
 
 
   $(document).ready(function() {
