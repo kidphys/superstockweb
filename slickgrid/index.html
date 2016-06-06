@@ -89,8 +89,8 @@
         <div data-role="header">
           <div data-role="navbar">
             <ul>
-              <li><a href="#anylink">Home</a></li>
-              <li><a href="#anylink">Page Two</a></li>
+              <li><a href="#anylink">Refresh</a></li>
+              <li><a href="#anylink">Liên hệ</a></li>
               <li><a href="#filter_panel">Lọc</a></li>
             </ul>
           </div>
@@ -151,40 +151,73 @@
   function fetch_data_dynamically() {
     console.log('Start loading');
     $.mobile.loading('show');
-    fetch_realtime_price(function(fields, data_arr, titles) {
-      $.mobile.loading('hide');
-      console.log('Loading done');
-      var items = build_json_array(fields, data_arr);
+
+    fetch_metadata(function(fields, titles, format) {
+      console.log('Fetching meta data done');
+
+      var column_settings = create_settings_with_format(fields, titles, format);
 
       /**
-      Hand pick only a few fields
+      Building mobile filter
       */
-      var target_fields = [];
-      for(var i = 0; i < fields.length; i++) {
-        target_fields.push({
-          id: fields[i],
-          name: titles[i],
-          field: fields[i]
-        });
-      }
-
-      /**
-      Build the grid
-      */
-      console.log('Building slick grid with fields', target_fields);
-      slick = build_slick_grid(build_columns_with_titles(target_fields));
-      slick.update(items);
-
-      var slider_settings = create_settings();
-
+      var slider_settings = create_filter_settings(column_settings);
+      console.log('Slider settings', slider_settings);
       build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
         var args = settings_to_args(slider_settings);
         console.log('updateFilter', args);
         slick.updateFilter(args);
       });
-
       $.mobile.changePage('#menu');
+
+      /**
+      Build grid
+      */
+      var slick = build_slick_grid(build_columns_with_titles(column_settings));
+
+      /**
+      Fetch data
+      */
+      fetch_realtime_price(function(data_arr) {
+        console.log('Fetching price done');
+        var items = build_json_array(fields, data_arr);
+        slick.update(items);
+      })
     });
+
+    // fetch_realtime_price(function(fields, data_arr, titles) {
+    //   $.mobile.loading('hide');
+    //   console.log('Loading done');
+    //   var items = build_json_array(fields, data_arr);
+
+    //   /**
+    //   Hand pick only a few fields
+    //   */
+    //   var target_fields = [];
+    //   for(var i = 0; i < fields.length; i++) {
+    //     target_fields.push({
+    //       id: fields[i],
+    //       name: titles[i],
+    //       field: fields[i]
+    //     });
+    //   }
+
+    //   /**
+    //   Build the grid
+    //   */
+    //   console.log('Building slick grid with fields', target_fields);
+    //   slick = build_slick_grid(build_columns_with_titles(target_fields));
+    //   slick.update(items);
+
+    //   var slider_settings = create_settings();
+
+    //   build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
+    //     var args = settings_to_args(slider_settings);
+    //     console.log('updateFilter', args);
+    //     slick.updateFilter(args);
+    //   });
+
+    //   $.mobile.changePage('#menu');
+    // });
   }
 
   var ref = new Firebase("https://superstock.firebaseio.com");

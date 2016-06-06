@@ -37,12 +37,13 @@ function build_slick_grid(columns) {
   }
 
   function myFilter(item, args) {
-    if(item['matchPrice'] < args.matchPrice) {
-      return false;
+    for(var key in args) {
+      if(item[key] < args[key]) {
+        return false;
+      }
     }
-    if(item['accumulatedVol'] < args.accumulatedVol) {
-      return false;
-    }
+
+    // for matching search
     // if (args.searchString != "" && item["Symbol"].indexOf(args.searchString) == -1) {
     //   return false;
     // }

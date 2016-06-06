@@ -16,6 +16,44 @@ function settings_to_args(settings) {
     }, {});
 }
 
+/**
+All length must be equal
+*/
+function create_settings_with_format(fields, titles, formats) {
+  var target_fields = [];
+  for(var i = 0; i < fields.length; i++) {
+    target_fields.push({
+      id: fields[i],
+      name: titles[i],
+      field: fields[i],
+      type: formats[i].split(':')[0],
+      from: Number(formats[i].split(':')[1]) || -100,
+      to: Number(formats[i].split(':')[2]) || 100,
+    });
+  }
+  return target_fields;
+}
+
+
+function create_filter_settings(format_settings) {
+    return format_settings
+    .filter(function(item) {
+        return item.type == 'number' || item.type == 'percent'
+    })
+    .map(function(item) {
+        return {
+            id: 'slider-'+item.id,
+            value: 0, //(item.to - item.from)/2,
+            min: item.from,
+            max: item.to,
+            label: item.name,
+            target: item.field,
+            // pretty hacky way to filter percent value
+            multiply: item.type == 'percent' ? 0.01 : 1,
+        };
+    });
+}
+
 function create_settings() {
     var slider_settings = [
         {id: 'slider-matchedPrice', value: 10, max: 200, label: 'Giá', target: 'matchPrice', multiply: 1},
@@ -39,7 +77,7 @@ function build_mobile_filter_panel(id, settings, callback) {
         var template =
                 '<label for="' + options.id + '">' + options.label + '</label> \
                 <input type="range" name="slider-fill" id="' + options.id + '" value="' + options.value +
-                '" min="0" max="' + options.max + '" data-highlight="true">';
+                '" min="' + options.min + '" max="' + options.max + '" data-highlight="true">';
         return $(template);
     }
 
@@ -136,41 +174,63 @@ function fetch_fields(field, callback) {
     });
 }
 
-function fetch_realtime_price(callback) {
-    console.log('Loading firebase instance');
+function fetch_metadata(callback) {
     var ref = new Firebase("https://superstock.firebaseio.com");
-    ref.child('superstock_fields').on('value', function(field_snapshot) {
+    ref.child('superstock_fields').once('value', function(field_snapshot) {
         var fields = field_snapshot.val()['symbol'].split('|');
-        console.log('Loading fields done', fields);
-        ref.child('superstock_titles').on('value', function(titles) {
+        ref.child('superstock_titles').once('value', function(titles) {
             titles = titles.val()['Mã'].split('|');
-            console.log('Loading titles done', titles);
-            ref.child('superstock').on('value', function(data_snapshot){
-                var data = data_snapshot.val();
-                if(!data) {
-                    throw 'There is no data to process';
-                }
-                var data_arr = Object.keys(data).map(function(key) {
-                    return data[key].split('|');
-                });
-                console.log('Loading price data done', data_arr);
-                callback(fields, data_arr, titles);
+            ref.child('superstock_format').once('value', function(formats) {
+                callback(fields, titles, formats.val()['format'].split('|'));
             });
-        })
+        });
     });
+}
+
+function fetch_realtime_price(callback) {
+    var ref = new Firebase("https://superstock.firebaseio.com");
+    ref.child('superstock').on('value', function(data_snapshot){
+        var data = data_snapshot.val();
+        if(!data) {
+            throw 'There is no data to process';
+        }
+        var data_arr = Object.keys(data).map(function(key) {
+            return data[key].split('|');
+        });
+        console.log('Loading price data done', data_arr);
+        callback(data_arr);
+    });
+}
+
+function text_formatter(row, cell, value, columnDef, dataContext) {
+   return value;
+}
+
+function percent_formatter(row, cell, value, columnDef, dataContext) {
+    return number_formatter(row, cell, value * 100, columnDef, dataContext);
 }
 
 function number_formatter(row, cell, value, columnDef, dataContext) {
     if(!isNaN(Number(value))) {
         var num = Number(value);
-        if(num > 1) {
+        if(num > 100 || num < 0) {
             return Number(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
         }
         else{
             return Number(value).toFixed(2).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
         }
     }
-    return value;
+    return 0;
+}
+
+function get_formatter(field) {
+    if(field.type == 'number') {
+        return number_formatter;
+    }
+    else if(field.type == 'percent') {
+        return percent_formatter;
+    }
+    return text_formatter;
 }
 
 /**
@@ -190,7 +250,7 @@ function build_columns_with_titles(fields) {
             selectable: false,
             sortable: true,
             defaultSortAsc: false,
-            formatter: number_formatter,
+            formatter: get_formatter(f),
         };
     });
 }
