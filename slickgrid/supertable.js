@@ -38,7 +38,9 @@ function build_slick_grid(columns) {
 
   function myFilter(item, args) {
     for(var key in args) {
-      if(item[key] < args[key]) {
+      var itemNum = Number(item[key]) || 0;
+      var argsNum = Number(args[key]) || 0;
+      if(itemNum < argsNum) {
         return false;
       }
     }
