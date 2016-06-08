@@ -43,7 +43,7 @@ function create_filter_settings(format_settings) {
     .map(function(item) {
         return {
             id: 'slider-'+item.id,
-            value: 0, //(item.to - item.from)/2,
+            value: item.from, //(item.to - item.from)/2,
             min: item.from,
             max: item.to,
             label: item.name,
