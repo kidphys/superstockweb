@@ -35,7 +35,6 @@ function create_settings_with_format(fields, titles, formats) {
   return target_fields;
 }
 
-
 function create_filter_settings(format_settings) {
     return format_settings
     .filter(function(item) {
@@ -102,8 +101,8 @@ function build_mobile_filter_panel(id, settings, callback) {
         After enhancement, somehow all event handlers dropped.
         Hence putting enhanceWithin() before binding event handlers help retained them
         */
+        console.log('Page changed, binding event to slider and enhance style', data.toPage.attr('id'));
         $target.enhanceWithin();
-        console.log('Page changed, binding event to slider', data.toPage.attr('id'));
         for(var i = 0; i < settings.length; i++) {
             (function(slider) {
                 var $slider = $('#' + slider.id);
