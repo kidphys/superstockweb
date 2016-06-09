@@ -27,6 +27,7 @@ function create_settings_with_format(fields, titles, formats) {
       name: titles[i],
       field: fields[i],
       type: formats[i].split(':')[0],
+      value: Number(format[i].split(':')[0]) || 0,
       from: Number(formats[i].split(':')[1]) || -100,
       to: Number(formats[i].split(':')[2]) || 100,
     });
@@ -43,7 +44,7 @@ function create_filter_settings(format_settings) {
     .map(function(item) {
         return {
             id: 'slider-'+item.id,
-            value: item.from, //(item.to - item.from)/2,
+            value: item.value, //(item.to - item.from)/2,
             min: item.from,
             max: item.to,
             label: item.name,
