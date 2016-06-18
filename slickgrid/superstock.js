@@ -22,14 +22,18 @@ All length must be equal
 function create_settings_with_format(fields, titles, formats) {
   var target_fields = [];
   for(var i = 0; i < fields.length; i++) {
+    var from = Number(formats[i].split(':')[1]);
+    var value = Number(formats[i].split(':')[2]);
+    var to = Number(formats[i].split(':')[3]);
+
     target_fields.push({
       id: fields[i],
       name: titles[i],
       field: fields[i],
       type: formats[i].split(':')[0],
-      value: Number(formats[i].split(':')[0]) || 0,
-      from: Number(formats[i].split(':')[1]) || -100,
-      to: Number(formats[i].split(':')[2]) || 100,
+      from: isNaN(from) ? -100 : from,
+      value: isNaN(from) ? 0 : value,
+      to: isNaN(to) ? -100 : to,
     });
   }
   return target_fields;
@@ -244,7 +248,7 @@ function build_columns_with_titles(fields) {
             field: f.field,
             behavior: "select",
             cssClass: "cell-selection",
-            width: 80,
+            width: 120,
             cannotTriggerInsert: true,
             resizable: true,
             selectable: false,
