@@ -1,5 +1,4 @@
-
-function build_slick_grid(columns) {
+function build_slick_grid(id, columns) {
 
   var dataView;
   var grid;
@@ -37,6 +36,12 @@ function build_slick_grid(columns) {
   }
 
   function myFilter(item, args) {
+    if(args.header && args.inValues) {
+      if(!(item[args.header] in args.inValues)) {
+        return false;
+      }
+    }
+
     for(var key in args) {
       var itemNum = Number(item[key]) || 0;
       var argsNum = Number(args[key]) || 0;
@@ -81,7 +86,7 @@ function build_slick_grid(columns) {
   var grid, dataView;
 
     dataView = new Slick.Data.DataView({ inlineFilters: true });
-    grid = new Slick.Grid("#myGrid", dataView, columns, options);
+    grid = new Slick.Grid(id, dataView, columns, options);
     grid.setSelectionModel(new Slick.RowSelectionModel());
 
     var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
@@ -264,6 +269,29 @@ function build_slick_grid(columns) {
         dataView.setFilterArgs(filterArgs);
         dataView.refresh();
       }, 10);
-    }
+    },
+
+    /**
+    Filter row so that value in header in the list of values
+    e.g. filteRowIn(['VND', 'SSI'], 'symbol')
+    */
+    filterRowIn: function(values, header) {
+      var inValues = values.reduce(function(a,b) {
+        a[b] = '';
+        return a
+      }, {});
+      function inFilter(item, args) {
+        if(item[args.header] in args.inValues) {
+          return true;
+        }
+        return false;
+      }
+      dataView.setFilterArgs({
+        'header': header,
+        'inValues': inValues
+      });
+      dataView.refresh();
+    },
+
   }
 }
