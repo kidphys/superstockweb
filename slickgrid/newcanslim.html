@@ -28,6 +28,7 @@
 
   <script src="superstock.js"></script>
   <script src="supertable.js"></script>
+  <script src="newcanslim.js"></script>
   <link rel="stylesheet" href="css/supertable.css" type="text/css"/>
 </head>
 <body>
@@ -120,4 +121,11 @@
 </div>
 
 </body>
+
+<script>
+
+    $('body').ready(function() {
+        sync_with_firebase();
+    });
+</script>
 </html>

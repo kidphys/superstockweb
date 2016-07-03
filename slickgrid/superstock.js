@@ -181,11 +181,11 @@ function fetch_fields(field, callback) {
 function fetch_metadata(callback) {
     var ref = new Firebase("https://superstock.firebaseio.com");
     ref.child('superstock_fields').once('value', function(field_snapshot) {
-        var fields = field_snapshot.val()['symbol'].split('|');
+        var fields = field_snapshot.val()['data'].split('|');
         ref.child('superstock_titles').once('value', function(titles) {
-            titles = titles.val()['Mã'].split('|');
+            titles = titles.val()['data'].split('|');
             ref.child('superstock_format').once('value', function(formats) {
-                callback(fields, titles, formats.val()['format'].split('|'));
+                callback(fields, titles, formats.val()['data'].split('|'));
             });
         });
     });
