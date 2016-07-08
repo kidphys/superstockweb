@@ -7,6 +7,7 @@
 
   <!-- Bootstrap Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://use.fontawesome.com/69012ee012.js"></script>
 
   <link rel="stylesheet" href="slick.grid.css" type="text/css"/>
   <link rel="stylesheet" href="controls/slick.pager.css" type="text/css"/>
@@ -31,6 +32,7 @@
   <script src="newcanslim.js"></script>
   <link rel="stylesheet" href="css/supertable.css" type="text/css"/>
   <link rel="stylesheet" href="canslim.css" type="text/css"/>
+  <link rel="stylesheet" href="nav.css" type="text/css"/>
 </head>
 <body>
 
@@ -44,18 +46,15 @@
 
           <div style="position:relative">
               <div class="grid-header" style="width:100%">
-<!--                   <a href="#filter_panel">
-                    <div id="superstock_filter" >
-                    </div>
-                  </a>
- -->                  <a href="./" target="_blank">
-                    <span>Đầy Đủ</span>
-                  </a>
+
+                  <a class="" href="./" target="_blank">
+                    <i class="fa fa-home fa-2x"></i>
+                    Đầy Đủ</a>
               </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-12">
               <div class='text-center'><h4>Siêu đầu tư</h4></div>
               <table id="longterm" st-table="longterm" st-safe-src="longterm" class="table table-striped">
                   <thead>
@@ -74,7 +73,7 @@
               </table>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-12">
               <div class='text-center'><h4>Siêu đầu cơ</h4></div>
               <table id="shorterm" st-table="shorterm" st-safe-src="shorterm" class="table table-striped">
                   <thead>
