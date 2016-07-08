@@ -5,6 +5,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Superstock</title>
 
+  <script src="https://use.fontawesome.com/69012ee012.js"></script>
+
   <!-- Bootstrap Latest compiled and minified CSS -->
 <!--   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
  -->
@@ -29,6 +31,7 @@
   <script src="superstock.js"></script>
   <script src="supertable.js"></script>
   <link rel="stylesheet" href="css/supertable.css" type="text/css"/>
+  <link rel="stylesheet" href="nav.css" type="text/css"/>
 </head>
 <body>
 
@@ -42,16 +45,18 @@
 
           <div style="position:relative">
               <div class="grid-header" style="width:100%">
-                  <a href="#filter_panel">
-                    <div id="superstock_filter" >
-                    </div>
-                  </a>
+                <div class="nav_link">
+                  <a class="btn btn-danger" href="#filter_panel">
+                    <i class="fa fa-filter fa-2x"></i>
+                    Lọc</a>
                   <a href="./newcanslim.html" target="_blank">
-                    <span>Siêu đầu tư</span>
+                    <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>
+                    Siêu đầu tư
                   </a>
                   <a id="summary_page">
                     <span></span>
                   </a>
+                </div>
               </div>
               <div id="myGrid" style="width:100%;height:500px;"></div>
           </div>
