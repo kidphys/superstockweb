@@ -63,5 +63,6 @@ function sync_with_firebase() {
         // });
         console.log('Loaded ', rows)
         render_array_to_table('#longterm', rows);
+        render_array_to_table('#shorterm', rows);
     });
 }
