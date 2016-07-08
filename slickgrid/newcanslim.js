@@ -53,16 +53,19 @@ function render_array_to_table(id, rows) {
 
 function sync_with_firebase() {
     var ref = new Firebase("https://superstock.firebaseio.com");
-    ref.child('longterm_data').on('value', function(data){
+    ref.child('longterm_data').on('value', function(data) {
         var obj = data.val();
         var rows = Object.keys(obj).map(function(symbol) {
             return obj[symbol]
         });
-        // var rows = Object.keys(obj).map(function(symbol) {
-        //     return pipe_to_stock_object(obj[symbol])
-        // });
-        console.log('Loaded ', rows)
         render_array_to_table('#longterm', rows);
+    });
+
+    ref.child('shortterm_data').on('value', function(data){
+        var obj = data.val();
+        var rows = Object.keys(obj).map(function(symbol) {
+            return obj[symbol]
+        });
         render_array_to_table('#shorterm', rows);
     });
 }
