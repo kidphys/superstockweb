@@ -55,40 +55,6 @@
       })
     });
 
-    // fetch_realtime_price(function(fields, data_arr, titles) {
-    //   $.mobile.loading('hide');
-    //   console.log('Loading done');
-    //   var items = build_json_array(fields, data_arr);
-
-    //   /**
-    //   Hand pick only a few fields
-    //   */
-    //   var target_fields = [];
-    //   for(var i = 0; i < fields.length; i++) {
-    //     target_fields.push({
-    //       id: fields[i],
-    //       name: titles[i],
-    //       field: fields[i]
-    //     });
-    //   }
-
-    //   /**
-    //   Build the grid
-    //   */
-    //   console.log('Building slick grid with fields', target_fields);
-    //   slick = build_slick_grid(build_columns_with_titles(target_fields));
-    //   slick.update(items);
-
-    //   var slider_settings = create_settings();
-
-    //   build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
-    //     var args = settings_to_args(slider_settings);
-    //     console.log('updateFilter', args);
-    //     slick.updateFilter(args);
-    //   });
-
-    //   $.mobile.changePage('#menu');
-    // });
   }
 
   var ref = new Firebase("https://superstock.firebaseio.com");
@@ -101,17 +67,6 @@
     function logout() {
     });
 
-  // TODO: not handle browser pop up properly, just load data directly for now
-  // ref.onAuth(function(authData) {
-  //   if(!authData) {
-  //     console.log('Not logged in yet', authData);
-  //     login_facebook(ref);
-  //   }
-  //   else{
-  //     console.log('Authenticated, proceed..', authData);
-  //     fetch_data_dynamically();
-  //   }
-  // });
 
   /**
   Sample to build a new grid
