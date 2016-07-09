@@ -66,6 +66,6 @@ function sync_with_firebase() {
         var rows = Object.keys(obj).map(function(symbol) {
             return obj[symbol]
         });
-        render_array_to_table('#shorterm', rows);
+        render_array_to_table('#shortterm', rows);
     });
 }

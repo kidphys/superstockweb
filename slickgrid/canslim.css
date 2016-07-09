@@ -10,3 +10,12 @@ td {
 .canslim_table {
     overflow: scroll;
 }
+
+.user_profile {
+    float: right;
+    margin-right: 20px;
+}
+
+.user_profile_image {
+    max-height: 20px;
+}
