@@ -92,7 +92,14 @@
   }
 
   var ref = new Firebase("https://superstock.firebaseio.com");
-  fetch_data_dynamically();
+
+  var auth = Auth();
+  auth.bind('#login',
+    function login() {
+      fetch_data_dynamically();
+    },
+    function logout() {
+    });
 
   // TODO: not handle browser pop up properly, just load data directly for now
   // ref.onAuth(function(authData) {
