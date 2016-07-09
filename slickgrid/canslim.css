@@ -11,11 +11,35 @@ td {
     overflow: scroll;
 }
 
-.user_profile {
+.auth_container {
     float: right;
-    margin-right: 20px;
+    margin: 5px 10px 0 0;
 }
 
-.user_profile_image {
+.user_profile>span {
+    color: #38c;
+    font-weight: 700;
+    margin-left: 5px;
+    position: relative;
+    bottom: -3px;
+}
+
+.user_profile {
+    float: right;
+}
+
+.user_profile>img {
     max-height: 20px;
+    position: relative;
+    top: -2px;
+}
+
+.user_sign_in_out {
+    float: right;
+    margin-left: 10px;
+}
+
+.nav_panel {
+    float: left;
+    margin: 5px 20px 0 5px;
 }

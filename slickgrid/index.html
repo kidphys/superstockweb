@@ -47,19 +47,28 @@
 
           <div style="position:relative">
               <div class="grid-header" style="width:100%">
-                <div class="user_profile">
-                    <img class="user_profile_image" id="user_avatar"></img>
-                    <span id="user_fullname"><span>
+                <div class="auth_container">
+                  <div class="user_sign_in_out">
+                    <a id="login" class="" href="#" >
+                        <div class="hidden-md hidden-lg">
+                          <i class="fa fa-user fa-2x"></i>
+                        </div>
+                        <div class="hidden-sm hidden-xs">
+                          <i class="fa fa-user fa-2x"></i>
+                          <span>Đăng nhập</span>
+                        </div>
+                    </a>
+                  </div>
+                  <div class="user_profile">
+                    <img id="user_avatar"></img>
+                    <span id="user_fullname"></span>
+                  </div>
                 </div>
-                <div>
+                <div class="nav_panel">
                   <a class="" href="./" target="_blank">
                     <i class="fa fa-home fa-2x"></i>
                     Đầy Đủ</a>
                     <!-- Auth -->
-                  <a id="login" class="" href="#" >
-                    <i class="fa fa-user fa-2x"></i>
-                    <span>Đăng nhập<span>
-                  </a>
                 </div>
               </div>
 

@@ -61,6 +61,7 @@ function Auth() {
         */
         bind: function(id, login_callback, logout_callback) {
             var $target = $(id);
+            var $login_icon = $('#login').find('i');
             bind_login_click($target,
                 function success() {
                     login_callback();
@@ -69,6 +70,9 @@ function Auth() {
                     logout_callback();
                     $target.find('span').text('Đăng nhập');
                     $('#user_fullname').empty();
+                    $('#user_avatar').attr('src', '');
+                    $login_icon.removeClass('fa-user');
+                    $login_icon.addClass('fa-sign-out');
                 });
 
             is_login(
@@ -76,8 +80,10 @@ function Auth() {
                     is_logged_in = true;
                     login_callback();
                     $target.find('span').text('Đăng xuất');
-                    $('#user_fullname').text('Xin chào, ' + authData.facebook.displayName);
+                    $('#user_fullname').text(authData.facebook.displayName);
                     $('#user_avatar').attr('src', authData.facebook.profileImageURL);
+                    $login_icon.removeClass('fa-user');
+                    $login_icon.addClass('fa-sign-out');
                 },
                 function not_yet() {
                     is_logged_in = false;
@@ -85,6 +91,8 @@ function Auth() {
                     $target.find('span').text('Đăng nhập');
                     $('#user_fullname').empty();
                     $('#user_avatar').attr('src', '');
+                    $login_icon.removeClass('fa-sign-out');
+                    $login_icon.addClass('fa-user');
                 }
             );
         }
