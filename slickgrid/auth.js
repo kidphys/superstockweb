@@ -63,8 +63,8 @@ function Auth() {
             var $target = $(id);
             var $login_icon = $('#login').find('i');
             bind_login_click($target,
-                function success() {
-                    login_callback();
+                function success(authData) {
+                    login_callback(authData);
                 },
                 function logout() {
                     logout_callback();
@@ -78,7 +78,7 @@ function Auth() {
             is_login(
                 function success(authData) {
                     is_logged_in = true;
-                    login_callback();
+                    login_callback(authData);
                     $target.find('span').text('Đăng xuất');
                     $('#user_fullname').text(authData.facebook.displayName);
                     $('#user_avatar').attr('src', authData.facebook.profileImageURL);

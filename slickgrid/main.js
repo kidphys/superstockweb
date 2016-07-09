@@ -18,7 +18,7 @@
   var symbol_mode = false;
 
 
-  function fetch_data_dynamically() {
+  function fetch_data_dynamically(ref, authData) {
     console.log('Start loading');
     $.mobile.loading('show');
 
@@ -37,9 +37,12 @@
         var args = settings_to_args(slider_settings);
         console.log('updateFilter', args);
         slick.updateFilter(args);
-      });
-      $.mobile.changePage('#superstock_page');
 
+        var uid = authData.uid;
+        ref.child('users/' + authData.uid).set(args);
+      });
+
+      $.mobile.changePage('#superstock_page');
       /**
       Build grid
       */
@@ -61,8 +64,9 @@
 
   var auth = Auth();
   auth.bind('#login',
-    function login() {
-      fetch_data_dynamically();
+    function login(authData) {
+      console.log('Logged in', authData);
+      fetch_data_dynamically(ref, authData);
     },
     function logout() {
     });
