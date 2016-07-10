@@ -17,6 +17,10 @@
   var slider_settings;
   var symbol_mode = false;
 
+/**
+Build a slider with ability to update later
+*/
+
 
   function fetch_data_dynamically(ref, authData) {
     console.log('Start loading');
@@ -32,7 +36,7 @@
       */
       slider_settings = create_filter_settings(column_settings);
       console.log('Slider settings', slider_settings);
-      build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
+      slider_map = build_mobile_filter_panel('#filter_panel', slider_settings, function(slider) {
         slider_settings = slider_settings;
         var args = settings_to_args(slider_settings);
         console.log('updateFilter', args);
@@ -55,7 +59,15 @@
         console.log('Fetching price done');
         var items = build_json_array(fields, data_arr);
         slick.update(items);
-      })
+
+        /**
+        Update filter settings
+        */
+        // fetch_filter_settings(function(settings) {
+
+        // });
+
+      });
     });
 
   }

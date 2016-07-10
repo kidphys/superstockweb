@@ -88,6 +88,8 @@ function build_mobile_filter_panel(id, settings, callback) {
     var built = false; // work around jQuery mobile call pagebeforechange twice
     var $target = $(id);
 
+    var slider_map = {};
+
     $(document).bind('pagebeforechange', function(e, data){
         if(!built) {
             console.log('Page Before Changed, appending slider', e, data);
@@ -95,10 +97,14 @@ function build_mobile_filter_panel(id, settings, callback) {
                 var slider_setting = settings[i];
                 var $slider = _slider_template(slider_setting);
                 $target.append($slider);
+                slider_map[slider_setting.id] = {
+                    settings: slider_setting
+                }
             }
             built = true;
         }
     });
+
 
     $(document).bind('pagechange', function(e, data) {
         /**
@@ -116,10 +122,23 @@ function build_mobile_filter_panel(id, settings, callback) {
                     slider.value = $slider.val();
                     callback(slider);
                 });
+                slider_map[slider.id].slider = $slider;
             })(settings[i]);
         }
     });
 
+    /**
+    Allow binding to change and update the slider later
+    */
+    return {
+        update: function(id, value) {
+            var $slider = slider_map[id].slider;
+            $slider.attr('value', value);
+            $slider.slider('refresh');
+            slider_map[id].settings.value = value;
+            callback(slider_map[id].settings);
+        }
+    }
 }
 
 /**
