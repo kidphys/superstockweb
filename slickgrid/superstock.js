@@ -225,6 +225,13 @@ function fetch_realtime_price(callback) {
     });
 }
 
+function fetch_filter_settings(uid, callback) {
+    var ref = new Firebase("https://superstock.firebaseio.com");
+    ref.child('users/' + uid).once('value', function(data_snapshot){
+        callback(data_snapshot.val())
+    });
+}
+
 function text_formatter(row, cell, value, columnDef, dataContext) {
    return value;
 }
